@@ -127,19 +127,19 @@ public:
 // prompt
 int prompt(int x)
 {
-	int input = -1;
+	char input = ' ';
 	
 	if (x == 1)
 	{
-		while (input != 1 && input != 2 && input != 3 && input != 4)
+		while (input != 'a' && input != 's' && input != 'w' && input != 'd')
 		{
-			std::cout << "Please choose one of the following prompt by entering the number:" << std::endl;
-			std::cout << "(1). moves left" << std::endl;
-			std::cout << "(2). moves right" << std::endl;
-			std::cout << "(3). moves up" << std::endl;
-			std::cout << "(4). moves down" << std::endl;
+			std::cout << "Please choose one of the following prompt by entering the character:" << std::endl;
+			std::cout << "(a). moves left" << std::endl;
+			std::cout << "(d). moves right" << std::endl;
+			std::cout << "(w). moves up" << std::endl;
+			std::cout << "(s). moves down" << std::endl;
 			std::cin >> input;
-			if (input != 1 && input != 2 && input != 3 && input != 4)
+			if (input != 'a' && input != 's' && input != 'w' && input != 'd')
 			{
 				std::cout << "Invalid input, please try again" << std::endl;
 			}
@@ -155,9 +155,9 @@ int prompt(int x)
 
 void gameSystem(Maze* maze)
 {
-	std::string error = "There's a wall there. Please choose again\n";
+	std::string error = "\nThere's a wall there. Please choose again";
 	
-	int input = -1; 
+	char input = ' '; 
 	
 	maze -> generateNewMaze();
 	prompt(2);
@@ -165,7 +165,7 @@ void gameSystem(Maze* maze)
 	while (maze -> playerPos.first != maze -> endPos || maze -> playerPos.second != maze -> H)
 	{
 		input = prompt(1);
-		if (input == 1)
+		if (input == 'a')
 		{
 			if (maze -> playerPos.second == 0 || maze -> grid[maze -> playerPos.first][maze -> playerPos.second - 1] == 1)
 			{
@@ -176,10 +176,10 @@ void gameSystem(Maze* maze)
 				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = 0;
 				maze -> playerPos.second -= 1;
 				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = -1;
-				maze -> printMaze();
+				
 			}
 		}
-		else if (input == 2)
+		else if (input == 'd')
 		{
 			if (maze -> grid[maze -> playerPos.first][maze -> playerPos.second + 1] == 1)
 			{
@@ -190,10 +190,10 @@ void gameSystem(Maze* maze)
 				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = 0;
 				maze -> playerPos.second += 1;
 				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = -1;
-				maze -> printMaze();
+				
 			}
 		}
-		else if (input == 3)
+		else if (input == 'w')
 		{
 			if (maze -> grid[maze -> playerPos.first - 1][maze -> playerPos.second] == 1)
 			{
@@ -204,10 +204,10 @@ void gameSystem(Maze* maze)
 				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = 0;
 				maze -> playerPos.first -= 1;
 				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = -1;
-				maze -> printMaze();
+				
 			}
 		}
-		else if (input == 4)
+		else if (input == 's')
 		{
 			if (maze -> grid[maze -> playerPos.first + 1][maze -> playerPos.second] == 1)
 			{
@@ -218,9 +218,10 @@ void gameSystem(Maze* maze)
 				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = 0;
 				maze -> playerPos.first += 1;
 				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = -1;
-				maze -> printMaze();
+				
 			}
 		}
+		maze -> printMaze();
 	}
 	
 	std::cout << "Congratulations! You made it out of the maze!" << std::endl;
@@ -231,5 +232,4 @@ int main()
     auto maze = new Maze(SIZE, SIZE);
 	
 	gameSystem(maze);
-	//std::cout << maze -> startPos;
 }
