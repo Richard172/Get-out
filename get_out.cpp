@@ -52,9 +52,9 @@ public:
     void generateNewMaze() {
         grid.resize(W, std::vector<int>(H, 1));
         std::srand(std::time(nullptr));
-        int currentRow = std::rand() % H + 1;
+        int currentRow = std::rand() % (H-1) + 1;
         currentRow = (currentRow % 2 == 1 ? currentRow : currentRow - 1);
-        int currentCol = std::rand() % W + 1;
+        int currentCol = std::rand() % (W-1) + 1;
         currentCol = (currentCol % 2 == 1 ? currentCol : currentCol - 1);
         grid[currentRow][currentCol] = 0;
         int visited = 1;
