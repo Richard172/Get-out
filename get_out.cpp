@@ -4,13 +4,14 @@
 #include <vector>
 #include <algorithm>
 #include <random>
+#include <utility>
 
-#define SIZE 20
+#define SIZE 4
 
 
 class Maze
 {
-private:
+public:
     int H;
     int W;
     std::vector<std::vector<int>> grid;
@@ -39,6 +40,7 @@ public:
     int w;
     int startPos;
     int endPos;
+	std::pair <int, int> playerPos;
 
     Maze(int height, int width){
         h = height;
@@ -95,21 +97,139 @@ public:
                 grid[index][W-1] = 0;
             }
         }
+		playerPos.first = startPos;
+		playerPos.second = 0;
+		grid[playerPos.first][playerPos.second] = -1;
     }
 
     void printMaze() {
         for (auto &i : grid) {
             for (int &j : i)
-                std::cout << (j == 1 ? "XX" : "  ");
+			{
+				if (j == 1)
+				{
+					std::cout << "XX";
+				}
+				else if (j == -1)
+				{
+					std::cout << "OO";
+				}
+				else
+				{
+					std::cout << "  "; 
+				}
+			}
             std::cout << '\n';
         }
     }
 };
 
+// prompt
+int prompt(int x)
+{
+	int input = -1;
+	
+	if (x == 1)
+	{
+		while (input != 1 && input != 2 && input != 3 && input != 4)
+		{
+			std::cout << "Please choose one of the following prompt by entering the number:" << std::endl;
+			std::cout << "(1). moves left" << std::endl;
+			std::cout << "(2). moves right" << std::endl;
+			std::cout << "(3). moves up" << std::endl;
+			std::cout << "(4). moves down" << std::endl;
+			std::cin >> input;
+			if (input != 1 && input != 2 && input != 3 && input != 4)
+			{
+				std::cout << "Invalid input, please try again" << std::endl;
+			}
+		}
+	}
+	if (x == 2)
+	{
+		std::cout << "\"OO\" is where your position is at. Your objective is to move to the gap in the right" << std::endl;
+	}
+	
+	return input;
+}
+
+void gameSystem(Maze* maze)
+{
+	std::string error = "There's a wall there. Please choose again\n";
+	
+	int input = -1; 
+	
+	maze -> generateNewMaze();
+	prompt(2);
+	maze -> printMaze();
+	while (maze -> playerPos.first != maze -> endPos || maze -> playerPos.second != maze -> H)
+	{
+		input = prompt(1);
+		if (input == 1)
+		{
+			if (maze -> playerPos.second == 0 || maze -> grid[maze -> playerPos.first][maze -> playerPos.second - 1] == 1)
+			{
+				std::cout << error << std::endl;
+			}
+			else
+			{
+				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = 0;
+				maze -> playerPos.second -= 1;
+				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = -1;
+				maze -> printMaze();
+			}
+		}
+		else if (input == 2)
+		{
+			if (maze -> grid[maze -> playerPos.first][maze -> playerPos.second + 1] == 1)
+			{
+				std::cout << error << std::endl;
+			}
+			else
+			{
+				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = 0;
+				maze -> playerPos.second += 1;
+				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = -1;
+				maze -> printMaze();
+			}
+		}
+		else if (input == 3)
+		{
+			if (maze -> grid[maze -> playerPos.first - 1][maze -> playerPos.second] == 1)
+			{
+				std::cout << error << std::endl;
+			}
+			else
+			{
+				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = 0;
+				maze -> playerPos.first -= 1;
+				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = -1;
+				maze -> printMaze();
+			}
+		}
+		else if (input == 4)
+		{
+			if (maze -> grid[maze -> playerPos.first + 1][maze -> playerPos.second] == 1)
+			{
+				std::cout << error << std::endl;
+			}
+			else
+			{
+				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = 0;
+				maze -> playerPos.first += 1;
+				maze -> grid[maze -> playerPos.first][maze -> playerPos.second] = -1;
+				maze -> printMaze();
+			}
+		}
+	}
+	
+	std::cout << "Congratulations! You made it out of the maze!" << std::endl;
+}
 
 int main()
 {
     auto maze = new Maze(SIZE, SIZE);
-    maze->generateNewMaze();
-    maze->printMaze();
+	
+	gameSystem(maze);
+	//std::cout << maze -> startPos;
 }
